@@ -5,14 +5,14 @@ div.classList.add('keyboard')
 document.querySelector('.calculator').appendChild(div)
 
 
-'7 8 9 / 4 5 6 - 1 2 3 + . 0 = * C'.split(' ').map(symbol => {
+'7 8 9 / 4 5 6 - 1 2 3 + . 0 = * C CE'.split(' ').map(symbol => {
     div.insertAdjacentHTML('beforeend', `<button value="${symbol}">${symbol}</button>`)
 })
 
 
 document.querySelectorAll('button').forEach(button => {
     button.addEventListener('click', function () {
-        // по клику вызывается функция со значением кнопки в качестве параметра
+
         calc(this.value)
     })
 })
@@ -21,44 +21,46 @@ document.addEventListener('keydown', event => {
     if ((event.key).match(/[0-9%\/*\-+=]|Backspace|Enter/)) calc(event.key)
 })
 
-// функция принимает значение кнопки или ключ клавиши
-function calc(value) {
-    // если нажат знак равенства или Enter
-    if (value.match(/=|Enter/)) {
-        // пробуем выполнить операцию
-        try {
-            // вычисляем значение строки
-            // это возможно благодаря методу "evaluate" объекта "math"
-            // Math.trunc используется для округления до целого числа
-            output.textContent = eval(output.textContent).toFixed(8)
 
-            // если операцию выполнить невозможно
-        } catch {
-            // сохраняем значение поля
-            let oldValue = output.textContent
-            // создаем новую переменную
-            let newValue = 'недопустимое выражение'
-            // выводим значение новой переменной в поле
-            output.textContent = newValue
-            // через полторы секунды возвращаем полю старое значение
-            setTimeout(() => {
-                output.textContent = oldValue
-            }, 1500)
+function calc(value) {
+
+    if (value.match(/=|Enter/)) {
+
+        if (output.textContent[output.textContent.length - 1] == 0 && output.textContent[output.textContent.length - 2] == "/") {
+            alert("на 0 делить не зя")
+        }else{
+            let result = Number(eval(output.textContent).toFixed(8))
+            if (result % 1 === 0) {
+                output.textContent = Math.trunc(math.evaluate(output.textContent))
+            } else {
+                output.textContent = result
+            }
         }
 
-        // если нажат символ "C"
+
+
     } else if (value === 'C') {
-        // очищаем поле
+
         output.textContent = ''
 
-        // если нажат символ "СЕ" или Backspace
-    } else if (value.match(/Backspace/)) {
-        // уменьшаем строку на один символ
+    } else if (value.match(/CE|Backspace/)) {
+
         output.textContent = output.textContent.substring(0, output.textContent.length - 1)
 
-        // если нажата любая другая (отфильтрованная) кнопка или клавиша
+
     } else {
-        // записываем ее значение в поле
-        output.textContent += value
+
+        let oldValue = output.textContent
+        if (output.textContent.length >= 1) {
+            if (output.textContent[output.textContent.length - 1].match(/[%\/*\-+=]|Backspace|Enter/) && value.match(/[%\/*\-+=]|Backspace|Enter/)) {
+                output.textContent = oldValue
+            } else {
+                output.textContent += value
+            }
+        } else {
+            output.textContent += value
+        }
+
+
     }
 }
