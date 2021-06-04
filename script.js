@@ -27,7 +27,7 @@ function calc(value) {
 
         if (output.textContent[output.textContent.length - 1] == 0 && output.textContent[output.textContent.length - 2] == "/") {
             output.textContent = "Деление на ноль невозможно"
-        }else{
+        } else {
             let result = Number(eval(output.textContent).toFixed(8))
             if (result % 1 === 0) {
                 output.textContent = Math.trunc(math.evaluate(output.textContent))
@@ -35,7 +35,6 @@ function calc(value) {
                 output.textContent = result
             }
         }
-
 
 
     } else if (value === 'C') {
@@ -49,22 +48,30 @@ function calc(value) {
 
     } else {
 
-        if (output.textContent === undefined){
+        if (output.textContent === undefined) {
             output.textContent = ""
         }
         let oldValue = output.textContent
-        let sep = output.textContent.split(/[%\/*\-+.]/)
+        let pointCount = 0
+        let mathSign = 0
 
-        if (output.textContent === "" && value.match(/[%\/*\-+=.]|Backspace|Enter/)){
-            output.textContent = oldValue
+        for (let i = 0; i < output.textContent.length; i++) {
+            if (output.textContent[i] === ".") {
+                pointCount++
+            }
+            if (output.textContent[i].match(/[%\/*\-+]/)) {
+                mathSign++
+            }
         }
-        else if (output.textContent.length >= 1 && output.textContent[output.textContent.length - 1].match(/[%\/*\-+=.]|Backspace|Enter/)
-            && value.match(/[%\/!*\-+=.]|Backspace|Enter/)){
+
+        if (output.textContent === "" && value.match(/[%\/*\-+=.]|Backspace|Enter/)) {
             output.textContent = oldValue
-        }
-        else if(value !== "F1" && value !== "F2"&& value !== "F3" && value !== "F4" && value !== "F5"&& value !== "F6"
-            && value !== "F7" && value !== "F8"&& value !== "F9" && value !== "F10" && value !== "F11"&& value !== "F12") {
-            if (sep.includes(".") && value.match(/[.]/)){
+        } else if (output.textContent.length >= 1 && output.textContent[output.textContent.length - 1].match(/[%\/*\-+=.]|Backspace|Enter/)
+            && value.match(/[%\/!*\-+=.]|Backspace|Enter/)) {
+            output.textContent = oldValue
+        } else if (value !== "F1" && value !== "F2" && value !== "F3" && value !== "F4" && value !== "F5" && value !== "F6"
+            && value !== "F7" && value !== "F8" && value !== "F9" && value !== "F10" && value !== "F11" && value !== "F12") {
+            if(pointCount>=1 && value.match(/[.]/) && mathSign < pointCount){
                 output.textContent = oldValue
             }else{
                 output.textContent += value
